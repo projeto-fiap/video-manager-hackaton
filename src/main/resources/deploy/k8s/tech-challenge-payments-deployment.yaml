@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-challenge-payments-deployment
+  namespace: default-namespace
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tech-challenge-payments
+  template:
+    metadata:
+      labels:
+        app: tech-challenge-payments
+    spec:
+      containers:
+        - name: tech-challenge-payments
+          image: matheuspatricio0/projeto-fiap-payments:latest
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8081
+          env:
+            - name: POSTGRES_URL
+              value: jdbc:postgresql://projetofiappayments.caetpmx4dios.us-east-1.rds.amazonaws.com/postgres?currentSchema=public
+            - name: MONGO_URL
+              value: mongodb://mongodb-service.default-namespace.svc.cluster.local:27017/mydatabase
+            - name: KEYCLOAK_BASE_URL
+              value: http://a740e813c410c4d05a99835a58e149d0-1270066710.us-east-1.elb.amazonaws.com
+            - name: ORDER_BASE_URL
+              value: http://a67d717ba3572466c8dcfae5401626b4-798609356.us-east-1.elb.amazonaws.com

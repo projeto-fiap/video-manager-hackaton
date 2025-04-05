@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-service
+  namespace: default-namespace
+spec:
+  selector:
+    app: tech-challenge-payments
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8081
+  type: LoadBalancer

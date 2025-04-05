@@ -1,0 +1,54 @@
+server:
+  port: 8082
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 500MB
+      max-request-size: 500MB
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    consumer:
+      group-id: video-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      enable-auto-commit: true
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: tech.fiap.project.domain.VideoProducerDTO
+        spring.json.use.type.headers: false
+        max.partition.fetch.bytes: 200000000
+        fetch.max.bytes: 200000000
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        max.request.size: 200000000
+        spring.json.add.type.headers: false
+
+    properties:
+      max.request.size: 200000000
+      fetch.message.max.bytes: 200000000
+
+aws:
+  accessKey: ${AWS_ACCESS_KEY_ID}
+  secretKey: ${AWS_SECRET_ACCESS_KEY}
+  region: "us-east-2"
+  s3:
+    bucketName: "sanada-video-hackaton"
+  lambda:
+    functionName: "ffmpeg_process_video"
+
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    com.amazonaws: WARN
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN
+    org.springframework.boot.autoconfigure: ERROR
