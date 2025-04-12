@@ -100,4 +100,5 @@ public class UploadVideoUseCase {
 		}
 		return filename.substring(0, dotIndex);
 	}
+
 }
