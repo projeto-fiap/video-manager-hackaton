@@ -28,7 +28,6 @@ public class UploadVideoUseCase {
 		this.bucketName = awsConfig.getBucketName();
 	}
 
-	// ✅ Método original (MultipartFile)
 	public FileUploadResponse uploadFile(MultipartFile multipartFile) {
 		String originalFilename = multipartFile.getOriginalFilename();
 		if (originalFilename == null || originalFilename.isEmpty()) {
@@ -44,13 +43,11 @@ public class UploadVideoUseCase {
 		}
 	}
 
-	// ✅ Novo método para Kafka (byte[] + filename)
 	public FileUploadResponse uploadFile(String originalFilename, byte[] fileBytes) {
 		return uploadFile(originalFilename, fileBytes, "video/mp4"); // default content
 																		// type
 	}
 
-	// ✅ Método privado comum aos dois
 	private FileUploadResponse uploadFile(String originalFilename, byte[] fileBytes, String contentType) {
 		FileUploadResponse fileUploadResponse = new FileUploadResponse();
 
@@ -83,7 +80,7 @@ public class UploadVideoUseCase {
 		return fileUploadResponse;
 	}
 
-	private String getFileExtension(String filename) {
+	String getFileExtension(String filename) {
 		int dotIndex = filename.lastIndexOf('.');
 		if (dotIndex == -1) {
 			throw new MediaTypeException("Extensão de arquivo inválida.",
@@ -92,7 +89,7 @@ public class UploadVideoUseCase {
 		return filename.substring(dotIndex + 1);
 	}
 
-	private String getFilenameWithoutExtension(String filename) {
+	String getFilenameWithoutExtension(String filename) {
 		int dotIndex = filename.lastIndexOf('.');
 		if (dotIndex == -1) {
 			throw new MediaTypeException("Arquivo sem extensão inválido.",
