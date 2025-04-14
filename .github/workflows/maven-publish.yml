@@ -69,7 +69,7 @@ jobs:
       - name: Unit Tests + Sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=video-manager-hackaton -Dsonar.token=$SONAR_TOKEN
+        run: mvn test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=projeto-fiap_video-manager-hackaton -Dsonar.token=$SONAR_TOKEN
 
   analysis-sonarqube:
     name: Quality Gate
