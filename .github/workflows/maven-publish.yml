@@ -86,7 +86,7 @@ jobs:
           sonar_url: "https://sonarcloud.io"
           sonar_branch: ${{ github.head_ref || github.ref_name }}
           sonar_token: ${{ secrets.SONAR_TOKEN }}
-          project_key: "video-manager-hackaton"
+          project_key: "projeto-fiap_video-manager-hackaton"
 
   send-docker-hub:
     name: Send Docker HUB
