@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: tech-challenge-payments-hpa
+  name: video-manager-hpa
   namespace: default-namespace
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: tech-challenge-payments-deployment
+    name: video-manager-deployment
   minReplicas: 2
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
