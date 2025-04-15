@@ -36,8 +36,8 @@ spring:
       fetch.message.max.bytes: 200000000
 
 aws:
-  accessKey: ${AWS_ACCESS_KEY_ID}
-  secretKey: ${AWS_SECRET_ACCESS_KEY}
+  accessKey: ${AWS_PRIVATE_ACCESS_KEY_ID}
+  secretKey: ${AWS_PRIVATE_SECRET_ACCESS_KEY}
   region: "us-east-2"
   s3:
     bucketName: "sanada-video-hackaton"
