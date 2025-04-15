@@ -68,7 +68,7 @@ jobs:
       - name: Unit Tests
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn  '-Dtest=!tech.integration.payment.**' test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -DsonarToken=$SONAR_TOKEN
+        run: mvn test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -DsonarToken=$SONAR_TOKEN
 
   analysis-sonarqube:
     name: Quality Gate
@@ -132,7 +132,7 @@ jobs:
   deploy-prd:
     runs-on: ubuntu-latest
     environment:
-      name: hml
+      name: prd
     needs:
       - send-docker-hub
     if: github.ref == 'refs/heads/main'
@@ -144,12 +144,22 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+      - name: Export AWS environment variables
+        run: |
+          echo "KEYCLOAK_BASE_URL=${{ secrets.KEYCLOAK_BASE_URL }}" >> $GITHUB_ENV
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
+          echo "KAFKA_SERVER=${{ secrets.KAFKA_SERVER }}" >> $GITHUB_ENV
+          echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> $GITHUB_ENV
+          echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.AWS_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
+
       - name: Update Kube Config
-        run: aws eks update-kubeconfig --name kubernetes-video-manager-hackaton --region us-east-1
-      - name: Current Context
-        run: kubectl config current-context
+        run: |
+          aws eks update-kubeconfig --name kubernetes-video-manager-hackaton --region us-east-2
+
       - name: Deploy Kubernetes Resources
         run: |
           kubectl apply -f src/main/resources/deploy/k8s/video-manager-deployment.yaml -n default-namespace

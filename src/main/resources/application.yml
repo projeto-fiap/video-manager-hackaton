@@ -38,11 +38,14 @@ spring:
 aws:
   accessKey: ${AWS_ACCESS_KEY_ID}
   secretKey: ${AWS_SECRET_ACCESS_KEY}
-  region: "us-east-2"
+  region: ${AWS_REGION}
   s3:
-    bucketName: "sanada-video-hackaton"
+    bucketName: {AWS_S3_BUCKET_NAME}
   lambda:
-    functionName: "ffmpeg_process_video"
+    functionName: {AWS_LAMBDA_FUNCTION_NAME}
+
+kafka:
+  server: ${KAFKA_SERVER}
 
 logging:
   level:
