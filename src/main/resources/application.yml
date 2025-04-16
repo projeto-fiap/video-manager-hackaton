@@ -36,9 +36,9 @@ spring:
       fetch.message.max.bytes: 200000000
 
 aws:
-  accessKey: ${AWS_PRIVATE_ACCESS_KEY_ID}
-  secretKey: ${AWS_PRIVATE_SECRET_ACCESS_KEY}
-  region: "us-east-2"
+  accessKey: ${AWS_ACCESS_KEY_ID}
+  secretKey: ${AWS_SECRET_ACCESS_KEY}
+  region: "us-east-1"
   s3:
     bucketName: {AWS_S3_BUCKET_NAME}
   lambda:
