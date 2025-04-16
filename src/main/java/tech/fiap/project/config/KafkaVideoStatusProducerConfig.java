@@ -16,6 +16,7 @@ import java.util.Map;
 
 @Configuration
 public class KafkaVideoStatusProducerConfig {
+
 	@Value("${kafka.server}")
 	private String sever;
 

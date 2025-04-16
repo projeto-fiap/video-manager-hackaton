@@ -8,7 +8,7 @@ import tech.fiap.project.domain.VideoStatus;
 import tech.fiap.project.domain.VideoStatusKafka;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 class KafkaStatusProducerTests {
 

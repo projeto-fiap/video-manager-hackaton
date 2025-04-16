@@ -44,11 +44,12 @@ public class KafkaStatusProducer {
 		sendStatus(status);
 	}
 
-	public void processed(String videoId, String storage) {
+	public void processed(String videoId, String storage, String downloadUrl) {
 		VideoStatusKafka status = new VideoStatusKafka();
 		status.setStatus(VideoStatus.processed);
 		status.setVideoId(videoId);
 		status.setStorage(storage);
+		status.setDownloadUrl(downloadUrl);
 		sendStatus(status);
 	}
 

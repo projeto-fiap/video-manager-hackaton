@@ -21,6 +21,8 @@ public class FileProcessedResponse {
 
 	private String storage;
 
+	private String downloadUrl;
+
 	private LocalDateTime dateTime;
 
 }

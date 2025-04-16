@@ -59,6 +59,7 @@ class KafkaFileConsumerTests {
 		processedResponse.setFilename("video.mp4");
 		processedResponse.setZipFilename("video.zip");
 		processedResponse.setStorage("s3://processed/path");
+		processedResponse.setDownloadUrl("s3://processed/download/path");
 		processedResponse.setDateTime(LocalDateTime.now());
 
 		when(uploadVideoUseCase.uploadFile(eq("video.mp4"), any())).thenReturn(uploadResponse);
@@ -71,7 +72,7 @@ class KafkaFileConsumerTests {
 		verify(kafkaStatusProducer).received("video.mp4");
 		verify(kafkaStatusProducer).uploading("video.mp4");
 		verify(kafkaStatusProducer).processing("video.mp4");
-		verify(kafkaStatusProducer).processed("video.mp4", "s3://processed/path");
+		verify(kafkaStatusProducer).processed("video.mp4", "s3://processed/path", "s3://processed/download/path");
 
 		verify(uploadVideoUseCase).uploadFile(eq("video.mp4"), any());
 		verify(processVideoUseCase).invokeLambdaFunction("video.mp4");
@@ -90,7 +91,7 @@ class KafkaFileConsumerTests {
 		verify(kafkaStatusProducer).received("video.mp4");
 		verify(kafkaStatusProducer, never()).uploading(any());
 		verify(kafkaStatusProducer, never()).processing(any());
-		verify(kafkaStatusProducer, never()).processed(any(), any());
+		verify(kafkaStatusProducer, never()).processed(any(), any(), any());
 	}
 
 }

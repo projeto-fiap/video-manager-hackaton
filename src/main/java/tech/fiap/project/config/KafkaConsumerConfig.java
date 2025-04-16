@@ -18,6 +18,7 @@ import java.util.Map;
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
+
 	@Value("${kafka.server}")
 	private String sever;
 
