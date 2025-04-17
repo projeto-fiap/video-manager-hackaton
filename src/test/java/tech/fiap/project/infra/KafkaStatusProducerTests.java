@@ -8,7 +8,7 @@ import tech.fiap.project.domain.VideoStatus;
 import tech.fiap.project.domain.VideoStatusKafka;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 class KafkaStatusProducerTests {
 
@@ -29,7 +29,7 @@ class KafkaStatusProducerTests {
 	@Test
 	void sendStatus_ShouldSendToKafka() {
 		// Arrange
-		VideoStatusKafka mensagem = new VideoStatusKafka("video123", "s3://path", VideoStatus.processed);
+		VideoStatusKafka mensagem = new VideoStatusKafka("video123", "s3://path", "s3://storage-url", VideoStatus.processed);
 
 		// Act
 		kafkaStatusProducer.sendStatus(mensagem);
@@ -77,7 +77,7 @@ class KafkaStatusProducerTests {
 	@Test
 	void processed_ShouldSendProcessedStatusWithStorage() {
 		// Act
-		kafkaStatusProducer.processed("video123", "s3://storage-url");
+		kafkaStatusProducer.processed("video123", "s3://storage-url", "s3://storage-url");
 
 		// Assert
 		verify(kafkaTemplate).send(eq("v1.video-upload-status"), statusCaptor.capture());
@@ -85,6 +85,7 @@ class KafkaStatusProducerTests {
 		assert sent.getVideoId().equals("video123");
 		assert sent.getStatus() == VideoStatus.processed;
 		assert sent.getStorage().equals("s3://storage-url");
+		assert sent.getDownloadUrl().equals("s3://storage-url");
 	}
 
 }

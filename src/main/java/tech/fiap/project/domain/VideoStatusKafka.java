@@ -13,6 +13,8 @@ public class VideoStatusKafka {
 
 	private String storage;
 
+	private String downloadUrl;
+
 	private VideoStatus status;
 
 }

@@ -51,7 +51,7 @@ public class KafkaFileConsumer {
 			FileProcessedResponse processResult = processVideoUseCase
 					.invokeLambdaFunction(uploadResult.getVideoFilename());
 
-			producer.processed(mensagem.getFilename(), processResult.getStorage());
+			producer.processed(mensagem.getFilename(), processResult.getStorage(), processResult.getDownloadUrl());
 			System.out.println("✅ Vídeo processado com sucesso: " + processResult);
 
 		}
