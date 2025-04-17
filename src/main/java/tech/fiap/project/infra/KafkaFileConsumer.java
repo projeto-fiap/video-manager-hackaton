@@ -1,11 +1,14 @@
 package tech.fiap.project.infra;
 
 import com.amazonaws.util.IOUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import tech.fiap.project.domain.VideoProducerDTO;
 import tech.fiap.project.domain.FileUploadResponse;
 import tech.fiap.project.domain.FileProcessedResponse;
+import tech.fiap.project.domain.exceptions.LambdaInvokeException;
+import tech.fiap.project.domain.exceptions.S3UploadException;
 import tech.fiap.project.usecase.ProcessVideoUseCase;
 import tech.fiap.project.usecase.UploadVideoUseCase;
 
@@ -31,37 +34,33 @@ public class KafkaFileConsumer {
 	}
 
 	@KafkaListener(topics = "v1.video-upload-content", groupId = "video-service")
-	public void consumirMensagem(VideoProducerDTO mensagem) {
+	public void consumirMensagem(String mensagem) {
 		System.out.println("✅");
-		System.out.println("🎥 Kafka - Vídeo recebido: " + mensagem.getFilename());
-		producer.received(mensagem.getFilename());
 		try {
+			VideoProducerDTO object = new ObjectMapper().readValue(mensagem, VideoProducerDTO.class);
+			System.out.println("🎥 Kafka - Vídeo recebido: " + object.getFilename());
+
 			// Decode base64
-			byte[] compressed = Base64.getDecoder().decode(mensagem.getData());
+			byte[] compressed = Base64.getDecoder().decode(object.getData());
 
 			// Decompress GZIP
-			byte[] videoBytes = decompress(compressed);
+			byte[] videoBytes = decompress(object.getFilename(), compressed);
 
-			// Fazer upload para S3
-			producer.uploading(mensagem.getFilename());
-			FileUploadResponse uploadResult = uploadVideoUseCase.uploadFile(mensagem.getFilename(), videoBytes);
+			FileUploadResponse uploadResult = uploadVideoUseCase.uploadFile(object.getFilename(),
+					object.getContentType(), videoBytes);
 
-			// Processar vídeo com Lambda ou qualquer outro processo
-			producer.processing(mensagem.getFilename());
 			FileProcessedResponse processResult = processVideoUseCase
 					.invokeLambdaFunction(uploadResult.getVideoFilename());
 
-			producer.processed(mensagem.getFilename(), processResult.getStorage(), processResult.getDownloadUrl());
-			System.out.println("✅ Vídeo processado com sucesso: " + processResult);
-
+			producer.success(object.getFilename(), processResult.getStorage(), processResult.getDownloadUrl());
 		}
 		catch (Exception e) {
-			System.err.println("❌ Erro ao processar vídeo do Kafka: " + e.getMessage());
-			e.printStackTrace();
+			System.err.println("❌ Erro inesperado: " + e.getMessage());
+			producer.error("Erro inesperado", "Formato de vídeo inválido");
 		}
 	}
 
-	private byte[] decompress(byte[] compressedData) throws IOException {
+	private byte[] decompress(String filename, byte[] compressedData) throws IOException {
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(compressedData);
 				GZIPInputStream gis = new GZIPInputStream(bis)) {
 			return IOUtils.toByteArray(gis);

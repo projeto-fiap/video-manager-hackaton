@@ -15,6 +15,8 @@ public class VideoStatusKafka {
 
 	private String downloadUrl;
 
+	private String message;
+
 	private VideoStatus status;
 
 }

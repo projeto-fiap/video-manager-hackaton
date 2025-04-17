@@ -13,6 +13,7 @@ import tech.fiap.project.domain.LambdaRequest;
 import tech.fiap.project.domain.LambdaResponse;
 import tech.fiap.project.domain.exceptions.LambdaInvokeException;
 import tech.fiap.project.domain.exceptions.MediaTypeException;
+import tech.fiap.project.infra.KafkaStatusProducer;
 
 @Service
 public class ProcessVideoUseCase {
@@ -21,10 +22,13 @@ public class ProcessVideoUseCase {
 
 	private final String lambdaFunctionName;
 
+	private final KafkaStatusProducer producer;
+
 	@Autowired
-	public ProcessVideoUseCase(AWSLambda awsLambdaClient, AwsConfig awsConfig) {
+	public ProcessVideoUseCase(AWSLambda awsLambdaClient, AwsConfig awsConfig, KafkaStatusProducer producer) {
 		this.awsLambdaClient = awsLambdaClient;
 		this.lambdaFunctionName = awsConfig.getLambdaFunction();
+		this.producer = producer;
 	}
 
 	public void invokeAsyncLambdaFunction(String fileName) {
@@ -60,6 +64,7 @@ public class ProcessVideoUseCase {
 				objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
 				LambdaResponse lambdaResponse = objectMapper.readValue(result, LambdaResponse.class);
 				fileUploadResponse.setStorage(lambdaResponse.getStorage());
+				fileUploadResponse.setDownloadUrl(lambdaResponse.getDownloadUrl());
 			}
 			catch (Exception ignored) {
 			}
@@ -71,6 +76,7 @@ public class ProcessVideoUseCase {
 			fileUploadResponse.setDateTime(java.time.LocalDateTime.now());
 		}
 		catch (Exception e) {
+			producer.error(fileName, "Erro ao processar o vídeo");
 			throw new LambdaInvokeException("Erro ao invocar a Lambda: " + e.getMessage(), e);
 		}
 
