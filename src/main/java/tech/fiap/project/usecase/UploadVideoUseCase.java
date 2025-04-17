@@ -9,6 +9,7 @@ import tech.fiap.project.config.AwsConfig;
 import tech.fiap.project.domain.FileUploadResponse;
 import tech.fiap.project.domain.exceptions.MediaTypeException;
 import tech.fiap.project.domain.exceptions.S3UploadException;
+import tech.fiap.project.infra.KafkaStatusProducer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,10 +23,13 @@ public class UploadVideoUseCase {
 
 	private final String bucketName;
 
+	private final KafkaStatusProducer producer;
+
 	@Autowired
-	public UploadVideoUseCase(AmazonS3 s3Client, AwsConfig awsConfig) {
+	public UploadVideoUseCase(AmazonS3 s3Client, AwsConfig awsConfig, KafkaStatusProducer producer) {
 		this.s3Client = s3Client;
 		this.bucketName = awsConfig.getBucketName();
+		this.producer = producer;
 	}
 
 	public FileUploadResponse uploadFile(MultipartFile multipartFile) {
@@ -43,9 +47,8 @@ public class UploadVideoUseCase {
 		}
 	}
 
-	public FileUploadResponse uploadFile(String originalFilename, byte[] fileBytes) {
-		return uploadFile(originalFilename, fileBytes, "video/mp4"); // default content
-																		// type
+	public FileUploadResponse uploadFile(String originalFilename, String contentType, byte[] fileBytes) {
+		return uploadFile(originalFilename, fileBytes, contentType);
 	}
 
 	private FileUploadResponse uploadFile(String originalFilename, byte[] fileBytes, String contentType) {
@@ -56,9 +59,8 @@ public class UploadVideoUseCase {
 					new IllegalArgumentException("Nome de arquivo inválido."));
 		}
 
-		String randomUUID = getFilenameWithoutExtension(originalFilename);
-		String fileExtension = getFileExtension(originalFilename);
-		String videoFileName = randomUUID + "." + fileExtension;
+		String fileExtension = getFileExtension(contentType);
+		String videoFileName = originalFilename + "." + fileExtension;
 		String filePath = "videos/" + videoFileName;
 
 		try {
@@ -69,24 +71,24 @@ public class UploadVideoUseCase {
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(fileBytes);
 			s3Client.putObject(bucketName, filePath, inputStream, objectMetadata);
 
-			fileUploadResponse.setFilename(randomUUID);
+			fileUploadResponse.setFilename(originalFilename);
 			fileUploadResponse.setVideoFilename(videoFileName);
 			fileUploadResponse.setDateTime(LocalDateTime.now());
 		}
 		catch (Exception e) {
+			producer.error(originalFilename, "Erro ao realizar upload do vídeo");
 			throw new S3UploadException("Erro ao fazer upload para o S3: " + e.getMessage(), e);
 		}
 
 		return fileUploadResponse;
 	}
 
-	String getFileExtension(String filename) {
-		int dotIndex = filename.lastIndexOf('.');
-		if (dotIndex == -1) {
-			throw new MediaTypeException("Extensão de arquivo inválida.",
-					new IllegalArgumentException("Extensão de arquivo inválida."));
+	String getFileExtension(String contentType) {
+		if (contentType == null || !contentType.contains("/")) {
+			throw new MediaTypeException("Content-Type inválido.",
+					new IllegalArgumentException("Content-Type inválido."));
 		}
-		return filename.substring(dotIndex + 1);
+		return contentType.substring(contentType.indexOf('/') + 1);
 	}
 
 	String getFilenameWithoutExtension(String filename) {

@@ -13,6 +13,8 @@ public class LambdaResponse {
 
 	private String storage;
 
+	private String downloadUrl;
+
 	private String videoDeleted;
 
 }

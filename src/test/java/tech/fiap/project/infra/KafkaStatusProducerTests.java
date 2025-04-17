@@ -29,61 +29,38 @@ class KafkaStatusProducerTests {
 	@Test
 	void sendStatus_ShouldSendToKafka() {
 		// Arrange
-		VideoStatusKafka mensagem = new VideoStatusKafka("video123", "s3://path", "s3://storage-url", VideoStatus.processed);
+		VideoStatusKafka mensagem = new VideoStatusKafka("video123", "s3://path", "s3://storage-url", "message",
+				VideoStatus.FINALIZADO);
 
 		// Act
 		kafkaStatusProducer.sendStatus(mensagem);
 
 		// Assert
-		verify(kafkaTemplate).send(eq("v1.video-upload-status"), eq(mensagem));
+		verify(kafkaTemplate).send(eq("v1.video-status"), eq(mensagem));
 	}
 
 	@Test
-	void received_ShouldSendReceivedStatus() {
+	void error_ShouldSendErrorStatus() {
 		// Act
-		kafkaStatusProducer.received("video123");
+		kafkaStatusProducer.error("video123", "mensagem");
 
 		// Assert
-		verify(kafkaTemplate).send(eq("v1.video-upload-status"), statusCaptor.capture());
+		verify(kafkaTemplate).send(eq("v1.video-status"), statusCaptor.capture());
 		VideoStatusKafka sent = statusCaptor.getValue();
 		assert sent.getVideoId().equals("video123");
-		assert sent.getStatus() == VideoStatus.received;
+		assert sent.getStatus() == VideoStatus.ERRO;
 	}
 
 	@Test
-	void uploading_ShouldSendUploadingStatus() {
+	void success_ShouldSendFinalizadoStatusWithStorage() {
 		// Act
-		kafkaStatusProducer.uploading("video123");
+		kafkaStatusProducer.success("video123", "s3://storage-url", "s3://storage-url");
 
 		// Assert
-		verify(kafkaTemplate).send(eq("v1.video-upload-status"), statusCaptor.capture());
+		verify(kafkaTemplate).send(eq("v1.video-status"), statusCaptor.capture());
 		VideoStatusKafka sent = statusCaptor.getValue();
 		assert sent.getVideoId().equals("video123");
-		assert sent.getStatus() == VideoStatus.uploading;
-	}
-
-	@Test
-	void processing_ShouldSendProcessingStatus() {
-		// Act
-		kafkaStatusProducer.processing("video123");
-
-		// Assert
-		verify(kafkaTemplate).send(eq("v1.video-upload-status"), statusCaptor.capture());
-		VideoStatusKafka sent = statusCaptor.getValue();
-		assert sent.getVideoId().equals("video123");
-		assert sent.getStatus() == VideoStatus.processing;
-	}
-
-	@Test
-	void processed_ShouldSendProcessedStatusWithStorage() {
-		// Act
-		kafkaStatusProducer.processed("video123", "s3://storage-url", "s3://storage-url");
-
-		// Assert
-		verify(kafkaTemplate).send(eq("v1.video-upload-status"), statusCaptor.capture());
-		VideoStatusKafka sent = statusCaptor.getValue();
-		assert sent.getVideoId().equals("video123");
-		assert sent.getStatus() == VideoStatus.processed;
+		assert sent.getStatus() == VideoStatus.FINALIZADO;
 		assert sent.getStorage().equals("s3://storage-url");
 		assert sent.getDownloadUrl().equals("s3://storage-url");
 	}

@@ -18,12 +18,12 @@ import java.util.Map;
 public class KafkaVideoStatusProducerConfig {
 
 	@Value("${kafka.server}")
-	private String sever;
+	private String server;
 
 	@Bean
 	public ProducerFactory<String, VideoStatusKafka> videoStatusProducerFactory() {
 		Map<String, Object> configProps = new HashMap<>();
-		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, sever);
+		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
 		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 		configProps.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 200_000_000);

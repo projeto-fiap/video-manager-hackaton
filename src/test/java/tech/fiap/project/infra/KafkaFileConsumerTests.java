@@ -1,5 +1,6 @@
 package tech.fiap.project.infra;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -48,7 +49,7 @@ class KafkaFileConsumerTests {
 		byte[] compressedBytes = compress(videoContent);
 		String base64Compressed = Base64.getEncoder().encodeToString(compressedBytes);
 
-		VideoProducerDTO dto = new VideoProducerDTO("video.mp4", base64Compressed);
+		VideoProducerDTO dto = new VideoProducerDTO("video.mp4", "video/mp4", base64Compressed);
 
 		FileUploadResponse uploadResponse = new FileUploadResponse();
 		uploadResponse.setFilename("video.mp4");
@@ -62,36 +63,32 @@ class KafkaFileConsumerTests {
 		processedResponse.setDownloadUrl("s3://processed/download/path");
 		processedResponse.setDateTime(LocalDateTime.now());
 
-		when(uploadVideoUseCase.uploadFile(eq("video.mp4"), any())).thenReturn(uploadResponse);
+		when(uploadVideoUseCase.uploadFile(eq("video.mp4"), eq("video/mp4"), any())).thenReturn(uploadResponse);
 		when(processVideoUseCase.invokeLambdaFunction("video.mp4")).thenReturn(processedResponse);
 
 		// Act
-		kafkaFileConsumer.consumirMensagem(dto);
+		String json = new ObjectMapper().writeValueAsString(dto);
+		kafkaFileConsumer.consumirMensagem(json);
 
 		// Assert
-		verify(kafkaStatusProducer).received("video.mp4");
-		verify(kafkaStatusProducer).uploading("video.mp4");
-		verify(kafkaStatusProducer).processing("video.mp4");
-		verify(kafkaStatusProducer).processed("video.mp4", "s3://processed/path", "s3://processed/download/path");
+		verify(kafkaStatusProducer).success("video.mp4", "s3://processed/path", "s3://processed/download/path");
 
-		verify(uploadVideoUseCase).uploadFile(eq("video.mp4"), any());
+		verify(uploadVideoUseCase).uploadFile(eq("video.mp4"), eq("video/mp4"), any());
 		verify(processVideoUseCase).invokeLambdaFunction("video.mp4");
 	}
 
 	@Test
-	void consumirMensagem_ShouldHandleExceptionGracefully() {
+	void consumirMensagem_ShouldHandleExceptionGracefully() throws Exception {
 		// Arrange
 		String invalidBase64 = "!!!not-valid-base64===";
-		VideoProducerDTO dto = new VideoProducerDTO("video.mp4", invalidBase64);
+		VideoProducerDTO dto = new VideoProducerDTO("video.mp4", "video/mp4", invalidBase64);
 
 		// Act
-		kafkaFileConsumer.consumirMensagem(dto);
+		String json = new ObjectMapper().writeValueAsString(dto);
+		kafkaFileConsumer.consumirMensagem(json);
 
 		// Assert
-		verify(kafkaStatusProducer).received("video.mp4");
-		verify(kafkaStatusProducer, never()).uploading(any());
-		verify(kafkaStatusProducer, never()).processing(any());
-		verify(kafkaStatusProducer, never()).processed(any(), any(), any());
+		verify(kafkaStatusProducer).error("Erro inesperado", "Formato de vídeo inválido");
 	}
 
 }

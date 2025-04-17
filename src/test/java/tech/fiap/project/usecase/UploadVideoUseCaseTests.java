@@ -40,7 +40,7 @@ class UploadVideoUseCaseTests {
 	@Test
 	void uploadFile_ShouldReturnFileUploadResponse_WhenValidMultipartFile() throws IOException {
 		// Arrange
-		String originalFilename = "video.mp4";
+		String originalFilename = "video";
 		MockMultipartFile multipartFile = new MockMultipartFile("file", originalFilename, "video/mp4", new byte[10]);
 
 		FileUploadResponse expectedResponse = new FileUploadResponse();
@@ -70,7 +70,8 @@ class UploadVideoUseCaseTests {
 	@Test
 	void uploadFile_ShouldReturnFileUploadResponse_WhenValidByteArrayAndFilename() {
 		// Arrange
-		String filename = "video.mp4";
+		String filename = "video";
+		String contentType = "video/mp4";
 		byte[] fileBytes = new byte[10];
 		FileUploadResponse expectedResponse = new FileUploadResponse();
 		expectedResponse.setFilename("video");
@@ -79,7 +80,7 @@ class UploadVideoUseCaseTests {
 		when(s3Client.putObject(anyString(), anyString(), any(), any(ObjectMetadata.class))).thenReturn(null);
 
 		// Act
-		FileUploadResponse actualResponse = uploadVideoUseCase.uploadFile(filename, fileBytes);
+		FileUploadResponse actualResponse = uploadVideoUseCase.uploadFile(filename, contentType, fileBytes);
 
 		// Assert
 		assertNotNull(actualResponse);
@@ -92,9 +93,10 @@ class UploadVideoUseCaseTests {
 		// Arrange
 		String filename = "video";
 		byte[] fileBytes = new byte[10];
+		String contentType = "videomp4";
 
 		// Act & Assert
-		assertThrows(MediaTypeException.class, () -> uploadVideoUseCase.uploadFile(filename, fileBytes));
+		assertThrows(MediaTypeException.class, () -> uploadVideoUseCase.uploadFile(filename, contentType, fileBytes));
 	}
 
 	@Test
