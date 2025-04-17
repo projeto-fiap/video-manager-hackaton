@@ -32,7 +32,7 @@ class ProcessVideoUseCaseTests {
 		awsLambda = mock(AWSLambda.class);
 		awsConfig = mock(AwsConfig.class);
 		when(awsConfig.getLambdaFunction()).thenReturn("test-lambda");
-		processVideoUseCase = new ProcessVideoUseCase(awsLambda, awsConfig);
+		processVideoUseCase = new ProcessVideoUseCase(awsLambda, awsConfig, mock());
 	}
 
 	@Test

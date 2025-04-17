@@ -11,6 +11,8 @@ public class VideoProducerDTO {
 
 	private String filename;
 
+	private String contentType;
+
 	private String data;
 
 }
