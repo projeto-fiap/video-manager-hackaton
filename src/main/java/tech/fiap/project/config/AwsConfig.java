@@ -16,20 +16,20 @@ import org.springframework.context.annotation.Configuration;
 public class AwsConfig {
 
 	@Getter
-	@Value("${aws.s3.bucketName}")
+	@Value("${privateaws.s3.bucketName}")
 	private String bucketName;
 
 	@Getter
-	@Value("${aws.lambda.functionName}")
+	@Value("${privateaws.lambda.functionName}")
 	private String lambdaFunction;
 
-	@Value("${aws.accessKey}")
+	@Value("${privateaws.accessKey}")
 	private String accessKey;
 
-	@Value("${aws.secretKey}")
+	@Value("${privateaws.secretKey}")
 	private String secretKey;
 
-	@Value("${aws.region}")
+	@Value("${privateaws.region}")
 	private String region;
 
 	@Bean

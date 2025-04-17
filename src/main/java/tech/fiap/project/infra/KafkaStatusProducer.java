@@ -35,6 +35,7 @@ public class KafkaStatusProducer {
 		status.setStatus(VideoStatus.FINALIZADO);
 		status.setVideoId(videoId);
 		status.setStorage(storage);
+		status.setDownloadUrl(downloadUrl);
 		sendStatus(status);
 	}
 

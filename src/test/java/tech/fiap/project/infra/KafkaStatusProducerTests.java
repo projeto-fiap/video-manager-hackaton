@@ -8,7 +8,7 @@ import tech.fiap.project.domain.VideoStatus;
 import tech.fiap.project.domain.VideoStatusKafka;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 class KafkaStatusProducerTests {
 
@@ -62,6 +62,7 @@ class KafkaStatusProducerTests {
 		assert sent.getVideoId().equals("video123");
 		assert sent.getStatus() == VideoStatus.FINALIZADO;
 		assert sent.getStorage().equals("s3://storage-url");
+		assert sent.getDownloadUrl().equals("s3://storage-url");
 	}
 
 }

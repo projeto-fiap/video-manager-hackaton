@@ -8,7 +8,7 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_SERVER}
 
     consumer:
       group-id: video-service
@@ -31,17 +31,17 @@ spring:
       max.request.size: 200000000
       fetch.message.max.bytes: 200000000
 
-aws:
+privateaws:
   accessKey: ${AWS_PRIVATE_ACCESS_KEY_ID}
   secretKey: ${AWS_PRIVATE_SECRET_ACCESS_KEY}
-  region: "us-east-2"
+  region: ${AWS_PRIVATE_REGION}
   s3:
-    bucketName: "sanada-video-hackaton"
+    bucketName: ${AWS_PRIVATE_S3_BUCKET_NAME}
   lambda:
     functionName: ${AWS_PRIVATE_LAMBDA_FUNCTION_NAME}
 
 kafka:
-  server: kafka:9092
+  server: ${KAFKA_SERVER}
 
 logging:
   level:
