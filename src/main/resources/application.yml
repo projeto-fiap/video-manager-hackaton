@@ -8,7 +8,7 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_SERVER}
 
     consumer:
       group-id: video-service
@@ -40,9 +40,9 @@ privateaws:
   secretKey: ${AWS_PRIVATE_SECRET_ACCESS_KEY}
   region: ${AWS_PRIVATE_REGION}
   s3:
-    bucketName: {AWS_PRIVATE_S3_BUCKET_NAME}
+    bucketName: ${AWS_PRIVATE_S3_BUCKET_NAME}
   lambda:
-    functionName: {AWS_PRIVATE_LAMBDA_FUNCTION_NAME}
+    functionName: ${AWS_PRIVATE_LAMBDA_FUNCTION_NAME}
 
 kafka:
   server: ${KAFKA_SERVER}
