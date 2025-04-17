@@ -35,14 +35,14 @@ spring:
       max.request.size: 200000000
       fetch.message.max.bytes: 200000000
 
-aws:
-  accessKey: ${AWS_ACCESS_KEY_ID}
-  secretKey: ${AWS_SECRET_ACCESS_KEY}
-  region: "us-east-1"
+privateaws:
+  accessKey: ${AWS_PRIVATE_ACCESS_KEY_ID}
+  secretKey: ${AWS_PRIVATE_SECRET_ACCESS_KEY}
+  region: ${AWS_PRIVATE_REGION}
   s3:
-    bucketName: {AWS_S3_BUCKET_NAME}
+    bucketName: {AWS_PRIVATE_S3_BUCKET_NAME}
   lambda:
-    functionName: {AWS_LAMBDA_FUNCTION_NAME}
+    functionName: {AWS_PRIVATE_LAMBDA_FUNCTION_NAME}
 
 kafka:
   server: ${KAFKA_SERVER}

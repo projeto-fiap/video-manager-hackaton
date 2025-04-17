@@ -28,11 +28,23 @@ spec:
           env:
             - name: KEYCLOAK_BASE_URL
               value: ${{ secrets.KEYCLOAK_BASE_URL }}
-            - name: AWS_ACCESS_KEY_ID
-              value: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            - name: AWS_SECRET_ACCESS_KEY
-              value: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            - name: AWS_REGION
-              value: ${{ secrets.AWS_REGION }}
             - name: KAFKA_SERVER
               value: ${{ secrets.KAFKA_SERVER }}
+            - name: AWS_ACCESS_KEY_ID
+              value: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            - name: AWS_SESSION_TOKEN
+              value: ${{ secrets.AWS_SESSION_TOKEN }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            - name: AWS_PRIVATE_SECRET_ACCESS_KEY
+              value: ${{ secrets.AWS_PRIVATE_SECRET_ACCESS_KEY }}
+            - name: AWS_PRIVATE_ACCESS_KEY_ID
+              value: ${{ secrets.AWS_PRIVATE_ACCESS_KEY_ID }}
+            - name: AWS_PRIVATE_SECRET_ACCESS_KEY
+              value: ${{ secrets.AWS_PRIVATE_SECRET_ACCESS_KEY }}
+            - name: AWS_PRIVATE_REGION
+              value: ${{ secrets.AWS_PRIVATE_REGION }}
+            - name: AWS_PRIVATE_S3_BUCKET_NAME
+              value: ${{ secrets.AWS_PRIVATE_S3_BUCKET_NAME }}
+            - name: AWS_PRIVATE_LAMBDA_FUNCTION_NAME
+              value: ${{ secrets.AWS_PRIVATE_LAMBDA_FUNCTION_NAME }}
