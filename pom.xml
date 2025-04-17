@@ -226,7 +226,7 @@
                         <exclude>**/test/**</exclude>
                         <exclude>**/generated-sources/**</exclude>
                         <exclude>tech/fiap/project/domain/**</exclude>
-                        <exclude>tech/fiap/project/config/*</exclude>
+                        <exclude>tech/fiap/project/config/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
