@@ -84,8 +84,6 @@ public class UploadVideoUseCase {
 	}
 
 	String getFileExtension(String contentType) {
-		System.err.println("❌ Erro inesperado: " + contentType);
-
 		if (contentType == null || !contentType.contains("/")) {
 			throw new MediaTypeException("Content-Type inválido.",
 					new IllegalArgumentException("Content-Type inválido."));

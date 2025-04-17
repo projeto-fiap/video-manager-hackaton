@@ -64,6 +64,7 @@ public class ProcessVideoUseCase {
 				objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
 				LambdaResponse lambdaResponse = objectMapper.readValue(result, LambdaResponse.class);
 				fileUploadResponse.setStorage(lambdaResponse.getStorage());
+				fileUploadResponse.setDownloadUrl(lambdaResponse.getDownloadUrl());
 			}
 			catch (Exception ignored) {
 			}

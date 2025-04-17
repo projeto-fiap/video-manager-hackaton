@@ -39,7 +39,8 @@ class ProcessVideoUseCaseTests {
 	void invokeLambdaFunction_ShouldReturnProcessedResponse() throws Exception {
 		// Arrange
 		String filename = "video.mp4";
-		LambdaResponse lambdaResponse = new LambdaResponse("OK", "s3://bucket/path", "false");
+		LambdaResponse lambdaResponse = new LambdaResponse("OK", "s3://bucket/path", "s3://bucket/download/path",
+				"false");
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
@@ -55,6 +56,7 @@ class ProcessVideoUseCaseTests {
 		assertEquals("video", response.getFilename());
 		assertEquals("video.zip", response.getZipFilename());
 		assertEquals("s3://bucket/path", response.getStorage());
+		assertEquals("s3://bucket/download/path", response.getDownloadUrl());
 		assertNotNull(response.getDateTime());
 	}
 

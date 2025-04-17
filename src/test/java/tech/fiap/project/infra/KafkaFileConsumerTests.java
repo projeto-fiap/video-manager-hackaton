@@ -60,6 +60,7 @@ class KafkaFileConsumerTests {
 		processedResponse.setFilename("video.mp4");
 		processedResponse.setZipFilename("video.zip");
 		processedResponse.setStorage("s3://processed/path");
+		processedResponse.setDownloadUrl("s3://processed/download/path");
 		processedResponse.setDateTime(LocalDateTime.now());
 
 		when(uploadVideoUseCase.uploadFile(eq("video.mp4"), eq("video/mp4"), any())).thenReturn(uploadResponse);
