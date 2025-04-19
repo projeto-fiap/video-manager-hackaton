@@ -164,7 +164,7 @@ jobs:
 
       - name: Update Kube Config
         run: |
-          aws eks update-kubeconfig --name kubernetes-video-manager-hackaton --region us-east-2
+          aws eks update-kubeconfig --name kubernetes-hackaton --region us-east-1
 
       - name: Deploy Kubernetes Resources
         run: |
