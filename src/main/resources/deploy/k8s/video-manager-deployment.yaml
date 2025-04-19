@@ -25,26 +25,51 @@ spec:
               cpu: "500m"
           ports:
             - containerPort: 8081
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-manager-deployment
+  namespace: default-namespace
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: video-manager-hackaton
+  template:
+    metadata:
+      labels:
+        app: video-manager-hackaton
+    spec:
+      containers:
+        - name: video-manager-hackaton
+          image: matheuspatricio0/video-manager-hackaton:latest
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8081
           env:
             - name: KEYCLOAK_BASE_URL
-              value: ${{ secrets.KEYCLOAK_BASE_URL }}
+              value: "${KEYCLOAK_BASE_URL}"
             - name: KAFKA_SERVER
-              value: ${{ secrets.KAFKA_SERVER }}
+              value: "${KAFKA_SERVER}"
             - name: AWS_ACCESS_KEY_ID
-              value: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              value: "${AWS_ACCESS_KEY_ID}"
             - name: AWS_SESSION_TOKEN
-              value: ${{ secrets.AWS_SESSION_TOKEN }}
+              value: "${AWS_SESSION_TOKEN}"
             - name: AWS_SECRET_ACCESS_KEY
-              value: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              value: "${AWS_SECRET_ACCESS_KEY}"
             - name: AWS_PRIVATE_SECRET_ACCESS_KEY
-              value: ${{ secrets.AWS_PRIVATE_SECRET_ACCESS_KEY }}
+              value: "${AWS_PRIVATE_SECRET_ACCESS_KEY}"
             - name: AWS_PRIVATE_ACCESS_KEY_ID
-              value: ${{ secrets.AWS_PRIVATE_ACCESS_KEY_ID }}
-            - name: AWS_PRIVATE_SECRET_ACCESS_KEY
-              value: ${{ secrets.AWS_PRIVATE_SECRET_ACCESS_KEY }}
+              value: "${AWS_PRIVATE_ACCESS_KEY_ID}"
             - name: AWS_PRIVATE_REGION
-              value: ${{ secrets.AWS_PRIVATE_REGION }}
+              value: "${AWS_PRIVATE_REGION}"
             - name: AWS_PRIVATE_S3_BUCKET_NAME
-              value: ${{ secrets.AWS_PRIVATE_S3_BUCKET_NAME }}
+              value: "${AWS_PRIVATE_S3_BUCKET_NAME}"
             - name: AWS_PRIVATE_LAMBDA_FUNCTION_NAME
-              value: ${{ secrets.AWS_PRIVATE_LAMBDA_FUNCTION_NAME }}
+              value: "${AWS_PRIVATE_LAMBDA_FUNCTION_NAME}"
