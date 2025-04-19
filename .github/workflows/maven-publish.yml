@@ -145,33 +145,14 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: us-east-1
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
-      - name: Export environment variables
-        run: |
-          echo "KEYCLOAK_BASE_URL=${{ secrets.KEYCLOAK_BASE_URL }}" >> $GITHUB_ENV
-          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
-          echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
-          echo "KAFKA_SERVER=${{ secrets.KAFKA_SERVER }}" >> $GITHUB_ENV
-          echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> $GITHUB_ENV
-          echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.AWS_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
-          echo "AWS_PRIVATE_ACCESS_KEY_ID=${{ secrets.AWS_PRIVATE_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-          echo "AWS_PRIVATE_SECRET_ACCESS_KEY=${{ secrets.AWS_PRIVATE_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-          echo "AWS_PRIVATE_REGION=${{ secrets.AWS_PRIVATE_REGION }}" >> $GITHUB_ENV
-          echo "AWS_PRIVATE_S3_BUCKET_NAME=${{ secrets.AWS_PRIVATE_S3_BUCKET_NAME }}" >> $GITHUB_ENV
-          echo "AWS_PRIVATE_LAMBDA_FUNCTION_NAME=${{ secrets.AWS_PRIVATE_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
-
       - name: Update Kube Config
-        run: |
-          aws eks update-kubeconfig --name kubernetes-hackaton --region us-east-1
+        run: aws eks update-kubeconfig --name kubernetes-hackaton --region us-east-1
 
-      - name: Verify kubectl Config
-        run: |
-          kubectl config get-contexts
-          kubectl cluster-info
+      - name: Current Context
+        run: kubectl config current-context
 
       - name: Create Kubernetes Secrets from GitHub Envs
         run: |
