@@ -152,9 +152,15 @@ jobs:
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
           echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
+          echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
           echo "KAFKA_SERVER=${{ secrets.KAFKA_SERVER }}" >> $GITHUB_ENV
           echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> $GITHUB_ENV
           echo "AWS_LAMBDA_FUNCTION_NAME=${{ secrets.AWS_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
+          echo "AWS_PRIVATE_ACCESS_KEY_ID=${{ secrets.AWS_PRIVATE_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "AWS_PRIVATE_SECRET_ACCESS_KEY=${{ secrets.AWS_PRIVATE_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_PRIVATE_REGION=${{ secrets.AWS_PRIVATE_REGION }}" >> $GITHUB_ENV
+          echo "AWS_PRIVATE_S3_BUCKET_NAME=${{ secrets.AWS_PRIVATE_S3_BUCKET_NAME }}" >> $GITHUB_ENV
+          echo "AWS_PRIVATE_LAMBDA_FUNCTION_NAME=${{ secrets.AWS_PRIVATE_LAMBDA_FUNCTION_NAME }}" >> $GITHUB_ENV
 
       - name: Update Kube Config
         run: |
