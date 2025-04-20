@@ -20,5 +20,5 @@ RUN apt-get update \
 RUN useradd -m nonroot
 
 USER nonroot
-EXPOSE 8080
+EXPOSE 8081
 CMD ["java", "-jar", "target/video-manager-hackaton-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prd"]
