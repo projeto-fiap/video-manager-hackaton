@@ -28,6 +28,9 @@ public class KafkaConsumerConfig {
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		
+		props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 52428800);
+		props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 52428800);
 
 		return new DefaultKafkaConsumerFactory<>(props);
 	}
